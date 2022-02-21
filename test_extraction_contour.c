@@ -31,6 +31,7 @@ int main(int argc, char * argv[])
     //ecrire_contour(Ens.first->C);
     printf("B\n");
     ecrire_ensemble_contours(Ens1);
+    ecriture_eps_splusieurs_contours(Ens1, I, argv[1]);
     printf("final prog\n");
     //ecrire_contour(*lc.first);
     //ecrire_plusieurs_contours(lc);

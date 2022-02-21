@@ -19,4 +19,6 @@ void ecriture_entete(FILE *fp, Image I);
 
 void ecriture_eps(Contour C, Image I, char * a);
 
+void ecriture_eps_plusieurs_contours(Ensemble_Contours Ens, Image I, char *a);
+
 #endif

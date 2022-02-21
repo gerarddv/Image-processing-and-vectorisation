@@ -13,7 +13,6 @@
 #include "geom2d.h"
 #include "ecriture_eps.h"
 
-
 int est_candidat(int x, int y, Image I)
 {
     if ((get_pixel_image(I, x, y) == NOIR) && ((get_pixel_image(I, x, y - 1) == BLANC) || (y - 1 <= 0)))
@@ -29,7 +28,7 @@ int est_candidat(int x, int y, Image I)
 Point pixel_candidat(Image I)
 {
     int x, y, cond = 0;
-    Point P;// = set_point(-10, -10);
+    Point P; // = set_point(-10, -10);
     while (cond == 0)
     {
         for (y = 1; y <= I.H; y++)
@@ -249,7 +248,7 @@ Ensemble_Contours parcours_vers_contours(Image I)
         Robot r;
         Point e, P = pixel_candidat(M);
         Contour C = creer_liste_Point_vide();
-        //C = supprimer_liste_Point(C);
+        // C = supprimer_liste_Point(C);
         int cond = 1;
         r.x = P.x;
         r.y = P.y;
@@ -276,9 +275,9 @@ Ensemble_Contours parcours_vers_contours(Image I)
         points += C.taille;
         ecrire_contour(C);
         Ens = ajouter_element_Ensemble_Contours(Ens, C);
-        //ecrire_contour(Ens.first->C);
-        //ecrire_ensemble_contours(Ens);
-        //C = supprimer_liste_Point(C);
+        // ecrire_contour(Ens.first->C);
+        // ecrire_ensemble_contours(Ens);
+        // C = supprimer_liste_Point(C);
     }
     printf(" %d contours avec %d segments\n", Ens.nombre_contours, points - Ens.nombre_contours);
     return Ens;
