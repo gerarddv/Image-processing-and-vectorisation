@@ -99,7 +99,7 @@ void entete_fichier_pbm(FILE *f)
 	
 	/* la ligne est correcte si et ssi ligne = {'P','1',0} 
 	  soit une chaine de 3 caracteres (le dernier est le caractere nul) */
-	if (l_ligne < 3)
+	if (l_ligne != 3)
 	{
 		ERREUR_FATALE("entete_fichier_pbm : ligne 1 incorrecte\n");
 	}

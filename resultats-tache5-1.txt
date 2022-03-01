@@ -1,0 +1,2 @@
+PBM Filename: [./IMAGES_TESTS/Droopy_Wolf.pbm] (X lenght, Y lenght): (821, 687) Contours: (78) Segments: (17306)
+PBM Filename: [./IMAGES_TESTS/FranceRegions.pbm] (X lenght, Y lenght): (1200, 1200) Contours: (40) Segments: (29540)

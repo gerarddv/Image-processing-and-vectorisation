@@ -283,26 +283,45 @@ Ensemble_Contours parcours_vers_contours(Image I)
     return Ens;
 }
 
-void ecrire_contour_file(Contour C, char *a)
+FILE *creation_fichier_txt(char *filename)
 {
-    char name[50];
-    strcpy(name, a);
-    strcat(name, ".txt");
-    FILE *f = fopen(name, "w");
-    if (f == NULL)
-    {
-        printf("Error opening file!\n");
-        exit(1);
-    }
-    int contours = 1;
-    Cellule_Liste_Point *el = C.first;
-    fprintf(f, "%d\n\n", contours);
-    fprintf(f, "%d\n", C.taille);
+    char name[50] = "";
+    // strcpy(name, filename);
+    // strcat(name, ".eps");
+    sprintf(name,"%s/%s.txt", OUTPUT_TXT_PATH, getFileName(filename));
+    printf("name is :%s\n",name);
+    return fopen(name, "w");
+}
+
+void ecrire_contour_file(Cellule_Liste_Point *el, FILE * f)
+{
     while (el)
     {
         fprintf(f, "%f %f\n", el->data.x, el->data.y);
         el = el->suiv;
     }
+}
+
+void ecrire_many_contour_file(Ensemble_Contours Ens, char * filename)
+{
+    int points = 0;
+    FILE *f = creation_fichier_txt(filename);
+    Contour_List_Element *el = Ens.first;
+    fprintf(f, "Contours : %d\n\n", Ens.nombre_contours);
+    if (f == NULL)
+    {
+        printf("Error opening file!\n");
+        exit(1);
+    }
+    while(el)
+    {
+        points += el->C.taille; //somme des points pour chaque contour
+        ecrire_contour_file(el->C.first, f);
+        fprintf(f, "\n");
+        el = el->next;
+    }
+    fprintf(f, "Segments: %d\nPoints: %d\n", points - Ens.nombre_contours, points);
+    fclose(f);
 }
 
 void ecrire_file_recapitulatif(Contour C, Image I, char *a)
@@ -315,4 +334,24 @@ void ecrire_file_recapitulatif(Contour C, Image I, char *a)
     }
     int contours = 1;
     fprintf(fp, "File: %s Largeur: %d Hauteur: %d Segments: %d\n", a, I.L, I.H, C.taille - contours);
+    fclose(fp);
+}
+
+void ecrire_file_recapitulatif_contours(Ensemble_Contours Ens, Image I, char *a)
+{
+    FILE *fp = fopen("resultats-tache5-1.txt", "a");
+    int points = 0;
+    Contour_List_Element *el = Ens.first;
+    if (fp == NULL)
+    {
+        printf("Error opening file!\n");
+        exit(1);
+    }
+    while(el)
+    {
+        points += el->C.taille; //somme des points pour chaque contour
+        el = el->next;
+    }
+    fprintf(fp, "PBM Filename: [%s] (X lenght, Y lenght): (%d, %d) Contours: (%d) Segments: (%d)\n", a, I.L, I.H, Ens.nombre_contours, points - Ens.nombre_contours);
+    fclose(fp);
 }

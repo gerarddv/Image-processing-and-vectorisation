@@ -10,6 +10,7 @@
 #include "image.h"
 #include "geom2d.h"
 #include "sequence.h"
+#include "ecriture_eps.h"
 
 void ecriture_entete(FILE *fp, Image I)
 {
@@ -17,84 +18,55 @@ void ecriture_entete(FILE *fp, Image I)
     fprintf(fp, "%%%%BoundingBox: %d %d %d %d\n", 0, 0, I.L, I.H);
 }
 
-void ecriture_eps(Contour C, Image I, char *a)
+char * getFileName ( char * pathname ) {
+    return (strrchr(pathname, '/')+1);
+}
+
+FILE *creation_fichier_eps(char *filename)
 {
-    char name[50];
-    strcpy(name, a);
-    strcat(name, ".eps");
-    FILE *fp = fopen(name, "w");
-    ecriture_entete(fp, I);
+    char name[50] = "";
+    // strcpy(name, filename);
+    // strcat(name, ".eps");
+    sprintf(name,"%s/%s.eps", OUTPUT_EPS_PATH, getFileName(filename));
+    printf("name is :%s\n",name);
+    return fopen(name, "w");
+}
+
+void ecriture_eps(int height, Cellule_Liste_Point *el, FILE *fp)
+{
+    fprintf(fp, "%f %f moveto\n", (el->data.x), (height - (el->data.y)));
+    while (!(el->suiv == NULL))
+    {
+        el = el->suiv;
+        fprintf(fp, "%f %f lineto\n", (el->data.x), (height - (el->data.y)));
+    }
+}
+
+void ecriture_eps_plusieurs_contours(Ensemble_Contours Ens, Image I, char *filename)
+{
     int mode;
-    Cellule_Liste_Point *el;
-    el = C.first;
+    Contour_List_Element *cell = Ens.first;
+    Cellule_Liste_Point *el = cell->C.first;
+    FILE *fp = creation_fichier_eps(filename);
+
+    ecriture_entete(fp, I);
     printf("Donnez une valeur, 1 pour stoke et 2 pour fill:");
     scanf("%d", &mode);
-    if (mode == 1)
+    while (cell) // while cell!=NULL
     {
-        fprintf(fp, "newpath\n");
-        fprintf(fp, "%f %f moveto\n", (el->data.x), (I.H - (el->data.y)));
-        while (!(el->suiv == NULL))
-        {
-            el = el->suiv;
-            fprintf(fp, "%f %f lineto\n", (el->data.x), (I.H - (el->data.y)));
-        }
+        el = cell->C.first;
+        ecriture_eps(I.H, el, fp);
+        fprintf(fp, "\n");
+        cell = cell->next;
+    }
+    if (mode == STROKE_MODE)
+    {
         fprintf(fp, "stroke\n");
     }
-    else if (mode == 2)
+    if (mode == FILL_MODE)
     {
-        fprintf(fp, "newpath\n");
-        fprintf(fp, "%f %f moveto\n", (el->data.x), (I.H - (el->data.y)));
-        while (!(el->suiv == NULL))
-        {
-            el = el->suiv;
-            fprintf(fp, "%f %f lineto\n", (el->data.x), (I.H - (el->data.y)));
-        }
         fprintf(fp, "fill\n");
     }
     fprintf(fp, "showpage\n");
-}
-
-void ecriture_eps_plusieurs_contours(Ensemble_Contours Ens, Image I, char *a)
-{
-    char name[50];
-    strcpy(name, a);
-    strcat(name, ".eps");
-    FILE *fp = fopen(name, "w");
-    ecriture_entete(fp, I);
-    int mode;
-    Contour_List_Element *cell;
-    cell = Ens.first;
-    Cellule_Liste_Point *el;
-    el = cell->C.first;
-    printf("Donnez une valeur, 1 pour stoke et 2 pour fill:");
-    scanf("%d", &mode);
-    while (cell)    //while cell!=NULL
-    {
-        el = cell->C.first;
-        if (mode == 1)
-        {
-            fprintf(fp, "newpath\n");
-            fprintf(fp, "%f %f moveto\n", (el->data.x), (I.H - (el->data.y)));
-            while (!(el->suiv == NULL))
-            {
-                el = el->suiv;
-                fprintf(fp, "%f %f lineto\n", (el->data.x), (I.H - (el->data.y)));
-            }
-            fprintf(fp, "stroke\n");
-        }
-        else if (mode == 2)
-        {
-            fprintf(fp, "newpath\n");
-            fprintf(fp, "%f %f moveto\n", (el->data.x), (I.H - (el->data.y)));
-            while (!(el->suiv == NULL))
-            {
-                el = el->suiv;
-                fprintf(fp, "%f %f lineto\n", (el->data.x), (I.H - (el->data.y)));
-            }
-            fprintf(fp, "fill\n");
-        }
-        printf("n\n");
-        cell = cell->next;
-    }
-    fprintf(fp, "showpage\n");
+    printf("n\n");
 }

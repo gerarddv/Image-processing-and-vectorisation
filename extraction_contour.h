@@ -40,8 +40,14 @@ Contour parcours_contour_vers_sequence(Image I);
 
 Ensemble_Contours parcours_vers_contours(Image I);
 
-void ecrire_contour_file(Contour C, char * a);
+FILE *creation_fichier_txt(char *filename);
+
+void ecrire_contour_file(Cellule_Liste_Point *el, FILE * f);
+
+void ecrire_many_contour_file(Ensemble_Contours Ens, char * filename);
 
 void ecrire_file_recapitulatif(Contour C, Image I, char * a);
+
+void ecrire_file_recapitulatif_contours(Ensemble_Contours Ens, Image I, char *a);
 
 #endif
